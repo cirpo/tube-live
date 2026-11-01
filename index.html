@@ -158,14 +158,16 @@ h1{margin:0;font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-.02e
 .narrow .brand svg{width:24px;height:24px}
 .narrow .live{font-size:12px;min-height:0}
 .narrow .modes{order:3;flex:1 1 100%}
-.narrow .modes button{padding:8px 12px 6px;min-height:44px}
+.narrow .modes{overflow:visible}
+.narrow .modes button{flex:1 1 auto;padding:8px 6px 6px;min-height:44px;font-size:13px}
 .narrow .chips{padding-bottom:14px}
 .narrow .lines{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;overflow:visible;padding-bottom:0}
 .narrow .lines button{display:block;min-width:0;min-height:44px;padding:6px 2px 2px;font-size:13px;letter-spacing:-.01em;text-align:center;overflow:hidden;text-overflow:ellipsis;background:linear-gradient(var(--sw),var(--sw)) top/100% 4px no-repeat,var(--surface)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]).narrow .lines button:not([aria-pressed="true"]){background:linear-gradient(var(--sw-dark),var(--sw-dark)) top/100% 4px no-repeat,var(--surface)}}
 :root[data-theme="dark"].narrow .lines button:not([aria-pressed="true"]){background:linear-gradient(var(--sw-dark),var(--sw-dark)) top/100% 4px no-repeat,var(--surface)}
 .narrow .lines button .sw{display:none}
-.narrow .lines button.bus{font-family:var(--mono);font-size:17px;font-weight:800}
+.narrow .lines.buses{grid-template-columns:repeat(6,minmax(0,1fr))}
+.narrow .lines button.bus{font-family:var(--mono);font-size:15px;font-weight:800;letter-spacing:0}
 .narrow .lines button[aria-pressed="true"]{background:var(--head);background:color-mix(in srgb,var(--head) 80%,#000)}
 .narrow .x{width:44px;height:44px;border-radius:12px}
 .narrow main{padding-block:14px 32px;gap:14px}
@@ -1026,6 +1028,7 @@ function setLine(id,save){
   /* a single-line network (DLR, Elizabeth) needs no chip row: the title names the line */
   document.querySelector(".chips").hidden=mlines.length<2;
   document.getElementById("lines").setAttribute("aria-label",mode==="bus"?"Choose a bus route":"Choose a line");
+  document.getElementById("lines").classList.toggle("buses",mode==="bus");
   document.getElementById("lg0").textContent=LINE.dirs[0]+", "+LINE.legend[0];
   document.getElementById("lg1").textContent=LINE.dirs[1]+", "+LINE.legend[1];
   document.querySelectorAll("#lines button").forEach(function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-line")===id));});
