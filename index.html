@@ -99,6 +99,7 @@ h1{margin:0;font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-.02e
 .legend>span{display:inline-flex;align-items:center;gap:8px}
 .legend svg{overflow:visible;flex:none}
 .hint{font-size:13px;color:var(--muted)}
+.none{margin:0;padding:12px 20px;border-bottom:1px solid var(--sunken);font-size:14px;color:var(--fg-2)}
 .mapbox{padding-block:8px 12px;overflow-x:auto;min-width:0}
 #map{display:block;margin:0 auto;width:100%;height:auto}
 .seg{stroke:var(--line);fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -223,6 +224,7 @@ h1{margin:0;font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-.02e
       </div>
       <span class="hint"><span id="taphint">Select a train or a station for details</span><span id="swipe" hidden> · Scroll the map sideways to see it all</span></span>
     </div>
+    <p class="none" id="none" role="status" hidden></p>
     <div class="mapbox" id="mapbox"><svg id="map" role="img" aria-label="Strip map with live train positions"></svg></div>
   </section>
 
@@ -775,6 +777,9 @@ function render(fresh){
   if(selTrain&&!trains.has(selTrain))closeSheet();
   drawCallout(now,fresh);
   counts=trains.size?n:null;
+  /* an empty map looks broken: say so when TfL has nothing in service (e.g. a route that doesn't run on Sundays) */
+  var none=document.getElementById("none"); none.hidden=!(fetchedAt&&!trains.size&&!demo);
+  if(!none.hidden)none.textContent=LINE.bus?"No buses on this route right now. TfL isn't reporting any in service.":"No trains on this line right now. TfL isn't reporting any in service.";
   document.getElementById("counts").textContent=trains.size?(n[0]+" "+LINE.dirs[0].toLowerCase()+" · "+n[1]+" "+LINE.dirs[1].toLowerCase()):"";
   var lv=document.getElementById("live");
   lv.classList.toggle("on",!!fetchedAt&&!demo);
@@ -1029,6 +1034,7 @@ function setLine(id,save){
   document.querySelector(".chips").hidden=mlines.length<2;
   document.getElementById("lines").setAttribute("aria-label",mode==="bus"?"Choose a bus route":"Choose a line");
   document.getElementById("lines").classList.toggle("buses",mode==="bus");
+  document.getElementById("none").hidden=true;
   document.getElementById("lg0").textContent=LINE.dirs[0]+", "+LINE.legend[0];
   document.getElementById("lg1").textContent=LINE.dirs[1]+", "+LINE.legend[1];
   document.querySelectorAll("#lines button").forEach(function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-line")===id));});
